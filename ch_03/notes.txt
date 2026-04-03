@@ -1,0 +1,55 @@
+Composite Types in GO:
+1. Arrays - too rigid to be used directly.
+    - no direct support for multi dimensional arrays , but can be simulated easily.
+    - go considers size of array as part of type of array , which is serious limitation for flexibility.
+    - above point coupled with the fact that there is no way to convert one type of array to another and
+    - cannot assign arrays of different sizes to same variable , thus usability is limited.
+    - variable declared with var keyword cannot be used to specify size of array while declaration, while those with
+    - const keyword can be used , for simple reason that const variables need to be mandatorily initialized.
+    - thus only use array when its size is known the exact length of ahead of time.
+    Q: why and what even is the utility of golang arrays?
+    A: Main aim of go arrays is to provide backing store for more flexible composite type Slices.
+
+2. Slices -> backing array (pointer)+len+capacity
+   - Effectively , slice is array whose length is not part of its type definition , so it grows on demand.
+   - same as arrays , sparse and multi dimensional slices can be declared.
+   - zero value for a slice is nil, which is used to represent absence of value for certain composite types in go.
+   - slice type does not allow comparison using == or != , only comparison with nil type is allowed. For comparison use
+   - slices.Equal function. Think why is it so?
+   - built in global functions -> len, cap, append ,delete , clear , copy
+   - append always returns a new slice header. If the existing capacity is sufficient, the header points to the same backing array; otherwise, a new backing array is allocated and elements are copied.
+   - make function -> allows creating slice with len and capacity predefined.
+   - for simplicity favor creation of nil slices over zero based slices.
+   - Slice Slicing
+    - very similar to how slicing works in python , just that no support for step function.z
+    - slicing means one more variable pointing to same backing array , thus change to one slice reflects into other.
+    - to avoid confusion of append and subslices , either never use append with subslice or use full slice expression to make append does not do ovewrite.
+    - full slice expression: a[low : high : max] , max-> signal upper bound for capacity ,
+   - slice to array -> use converted function of type []int().
+   - array to slice -> use the slicing operator , [:].
+
+3. Maps
+    - maps in go are implemented under the hood using hash tables.
+    - behaviour wise similar to slice , like they are not comparable , their zero value is nil (why?).
+    - map key in go can only be any comparable type , thus map or slice cannot be used as key in map.
+    - built in functions -> clear, len ,delete
+    - for comparison use maps.Equal / maps.EqualFunc
+    - go does not have support for sets , but go maps can emulate set behaviour.
+
+4. String and Runes
+    - go string is not made up of runes , yes sounds lie but it is what it is.
+    - strings in go are sequence of bytes.
+    - this sequence is believed / assumed to be written in utf-8 encoding
+    - though go allows usage of slicing and indexing with strings , should be used only when it is confirm that string only has characters that each take 1 byte for representation.
+    - built in for range loop is optimized to deal with rune and indexing in a string .
+
+5. Structs
+    - structs used to group together related data and behavior.
+    - note go does not have inheritance support , but has composition support.
+    - anonymous struct , onetime use structs, which have only one instance.
+    - Structs are comparable only if all their fields are comparable; otherwise you must define equality explicitly and u cannot directly use == or != for comparison , it won't compile.
+    - two structs can only be compared if they have comparable fields , same field names in same order, if any of the condition is not met , no comparison allowed.
+
+General Points:
+1. go is pass by value.
+2. every go programs binary includes the go runtime.

@@ -1,0 +1,46 @@
+General Concepts:
+1. Zero Value :
+    - explicit default value assigned to a variable which is only declared.
+2. Literals :
+    - explicitly specified number , character or string. Go has 4 literals
+        - integer literal , floating literal , rune literal , string literal.
+
+
+PreDeclared Types:
+1. Boolean
+2. Numeric types: (12)
+    - integer types -> int8 , int16, int32, int64, uint8, uint16, uint32, uint64 -> zero value is 0;
+    - floating-point types -> float32 , float64 -> zero value is 0.0
+    - complex types -> complex32(float32) , complex64(float64) -> zero value is 0i+0j.
+3. String
+    - zero value is empty string i.e "".
+    - string comparison (== , !=) , ordering (>,>=,<,<=) and concatenation (+) is supported.
+    - go strings are immutable.
+
+
+Type conversion:
+1. Go does not have implicit type conversion , a strict no , all conversions are supposed to be explicit
+    repeat no automatic promotion in types or anything.
+2. This above rule has repercussions , no type can be converted into boolean in go.
+
+
+Variable Declaration:
+1. var x int = 18 , most verbose way ,
+2. var x = 18 , if type on left side of = is intended type , type declaration from rhs can be omitted.
+3. var x =18 and x:=18 are exactly same
+4. := is a short variable declaration that can reassign existing variables only when at least one new variable is declared in the same statement.
+   var allows reassignment freely, while const does not allow reassignment at all.
+5. For package level variable declarations , use var and not := syntax.
+6. const keyword -> used to declare constant variables, variables whose value is known at compile time.
+
+General Points:
+1. Unlike other languages , single('') and double("") quotes are not interchangeable.
+2. Strings can also be declared using `` , apart from "" , useful in case backspace characters are needed.
+3. Byte is alias for unit8 and rune is alias for int32 type.
+4. On 32bit system , int means int32 and on 64bit systems int means int64.
+5. Go like other languages uses IEEE 754 floating point standard for floating types.
+6. No point using == or != to compare floats in go (or any other language) due to precision issue.
+7. Go literals are untyped.
+8. It is a good practice to declare variables (using const or var depending on situation) in parenthesis.
+9. In go it is a compile time error if declared variable(using var) is not used even once. This is not valid for
+    variables declared using const keyword.

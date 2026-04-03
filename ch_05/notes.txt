@@ -1,0 +1,40 @@
+Go Functions
+    - go functions are quite similar to how functions in other languages are , just that few syntactic differences and additions are there.
+    - go does not have named and optional parameters. Function calls in Go are based strictly on the positional order of arguments.
+    - named parameters can be simulated using a struct as input to function , while optional parameter can be done using variadic args ,
+    - but in most cases these will not be required in go.
+    - variadic parameter -> variable number of inputs to a function , must be last or only input parameter to function.
+        - within the function body variadic parameter creates a slice of defined type to work with.
+    - go functions can have multiple return values
+        - go uses this feature to return error as a return value , mandatorily the last value.
+        - to ignore any of the returned values , _ as a valid variable can be used , compiler will not scream.
+    - blank returns : never use them
+        - because they source of errors and coupled with named returns , unexpected results can take place.
+        - as rule , if go functions return anything , let then not be blank returns for sure.
+
+    - functions in go are first class citizens.
+        - means function themselves are treated as type , and can have variables of their type
+        - default zero value for a function is  nil.
+        - means go functions can be treated as values, returned from other functions , can be given as input to other functions and all.
+
+    - anonymous function
+        - functions without name, for one time use.
+        - few good use cases are launching go routines and run cleanup function in defer statement.
+        - in development , middlewares are executed using closures.
+
+Closures:
+    - functions defined within a function is called a closure.
+    - the internal function encompasses the context of outer function , meaning it will have access
+    - to outer scope even if the outer function has finished executing.
+
+
+Defer:
+    - golang keyword , which is used to run cleanup functions , use case can be like release resources (files close etc.)
+    - defer creates a stack and pushes each function assigned into it , and once main thread is done , before the return keyword all functions
+    - from defer stack are popped and executed in lifo manner.
+
+
+Call By Value:
+    - go is call by value means , when variables are supplied as parameter to function , within the function scope always creates new copy to work.
+    - meaning any change within that scope will have not change in the variable outside the function scope.
+    - this call by value is valid for pointer types in go as well. That is how when mutability is desired it can be achieved even with pass by value semantics.

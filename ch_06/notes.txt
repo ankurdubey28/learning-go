@@ -1,0 +1,59 @@
+Pointers:
+    - a variable which stores location / memory address of another variable.
+    - each variable takes different amount of space in memory address, like int 32 bits (4 bytes) , boolean 1 bit(since smallest allocatable space is 1 byte so entire 1 byte)
+    - zero value of pointer is nil. (quick recap , nil itself is untyped identifier , indicating absence of any value).
+    - unlike C/C++ , nil does not correspond to 0, remember go has not concept of truthy / falsy values.
+    - also no pointer arithmetic allowed in go unline C/C++.
+    - & and * operators:
+        - &(address operator) gives address of variable, while *(indirection operator) extracts value from given address.
+        - dereferencing nil pointer makes go panic.
+    - pointers in general make garbage collectors job hard and tough to understand code.
+
+    - Pointers mean mutable parameters
+        - modern software engineering focuses on immutability to avoid bugs , and track changes.
+        - in golang , by default call by value behaviour means immutability as copies are made of variables when passed in function.
+        - in case mutability is desired instead of passing directly , pass variables as pointer (same as default java non primitive behaviour).
+
+
+
+Maps V/S Slices
+    - Mutable behavior of maps is easy to understand given it actually being a pointer to underlying data structure.
+    - due to this, design wise using maps in public apis is always a bad idea. Rather than map use a struct.
+
+    - Slice has peculiar behaviour , that is when passed in function parameter , its elements can be modified but no addition etc is possible in original slice.
+    - reason lies in structure of slice , slice->len(int),cap(int),pointer(array), these 3 things constitute a slice.
+
+
+
+Reducing GC workload:
+    - use slice as buffers , that is instead of allocating new buffers everytime for tasks like reading from file ,
+      declare a buffer and reuse it , because for every read operation the contents of buffer can be overwritten instead
+      of allocating new buffer separately.
+      - languages like python go for first approach while go goes for second approach (reusing buffers).
+    - garbage in programming context means data which no longer has any pointer pointing to it.
+    - similar to other languages , stack and heap are used for memory allocation , and heap memory is managed by gc.
+      as long as memory on heap can be traced back to any pointer on stack , it is not garbage and is valid.
+    - escape analysis : compilers way of deciding whether a value can live in stack or has to be on heap.
+        - if a value is still needed after function finishes then it needs to be on heap , else stack.
+    - for bigger variables like big structs its more efficient performance wise to pass pointer instead of passing entire struct.
+    - in general , usage of pointers should be sparse in go to make gc load less and overall smooth bug free code.
+
+
+Make() vs New()
+    -new
+        -Built-in function that allocates zeroed memory for type T
+        -Returns *T
+        -General-purpose allocator (any type)
+        -For slices/maps/channels, it allocates the header only, underlying structure remains nil
+        -Allocation may happen on stack or heap (escape analysis)
+    -make
+        -Used only for slice, map, channel
+        -Allocates and initializes the underlying runtime data structure
+        -Returns initialized value (not pointer)
+        -Produces usable (non-nil) slice/map/channel
+
+    - for non reference types (int , float, etc.) , new works perfectly fine , and doing new(int) is same as doing
+    - structs in go themselves are values types (non reference types ) but can contain reference types , thus overall
+      behaviour differs in that case.
+
+

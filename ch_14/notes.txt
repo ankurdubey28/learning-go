@@ -1,0 +1,29 @@
+Context:
+    - What is even the purpose of having another feature in language? What problem does it even solve.
+
+    Problem: Managing the lifecycle of operations and data across multiple goroutines.
+             Here lifecycle operations mean structured cancellation , timeouts and request scoped propagation (metadata) across goroutines.
+
+    Solution: Context , simply an instance which meets the context interface defined in context package. Since idiomatic go encourages
+              explicit data passing , same is the case with context , it is passed as a parameter to functions.
+
+
+    - very valid question is how do other languages solve these issues ? Example JS/TS? Answer is that solution to above listed problems
+      is done in implicit way , in case of JS/TS , fetch+AbortController and AbortSignal achieves same things as context in Go.
+      So other languages have constructs in place to solve these problems , they are just implicit in nature. Also go being implicit
+      about context has a lot to do with goroutines(concurrency).
+
+   - Convention: pass context as first parameter to your function.
+
+   - Example: Say a parent goroutine spawned child routines for purpose like db call etc. on basis of incoming client request, but if client
+              goes offline / request cancelled , in that parent routine needs to stop , and so do the children routines . Context provides a
+              way to achieve this and avoid goroutine leak.
+
+
+   Important functions:
+       -context.Background() → creates a root, empty context used as the starting point of a context tree in main, servers, and tests.
+       -context.TODO() → creates an empty placeholder context used temporarily when the correct context is not yet determined.
+       -context.WithCancel(parent) → returns a child context that can be manually cancelled, propagating cancellation to all its descendants.
+       -context.WithTimeout(parent, duration) → returns a child context that automatically cancels after the specified duration.
+       -context.WithDeadline(parent, time) → returns a child context that cancels at a specific absolute time.
+       -context.WithValue(parent, key, value) → returns a child context carrying request-scoped metadata that propagates through the call chain.

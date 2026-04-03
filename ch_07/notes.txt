@@ -1,0 +1,121 @@
+Few Points:
+    - concrete type: specify what and how to do.
+    - abstract type: specify only what to do , not how to do.
+    - types in go are scoped to blocks ({}) in which they appear
+    - go does not have hybrid types like java has (abstract types and interfaces with default methods)
+    - go encourages to not write getter and setter and rather directly access value , for cases where
+      one needs to restrict access there are other ways to deal.
+    - nil instances are allowed in pointer receiver methods / packages , just that the special case of nil needs
+      to be separately handled and if not done , then using such instance anywhere in code with code panic.
+    - Package Level States:
+        - a package level variable holding data which is shared across all functions and goroutines within that package
+          and available to other packages which import this package.
+    - Static Dispatch:
+        - this occurs when method being called is determined at compile time. Basically compiler knows which
+          method to call , simple and fast.
+    - Dynamic Dispatch:
+        - this occurs when method being called is determined at runtime. Allows flexibility , polymorphism but
+          at cost of overhead of this runtime determination.
+    - Duck typing: if it looks like a duck and quacks like a duck , then it is a duck.
+        - term associated with dynamic languages lacking strong typing (python , JS).
+        - idea is that objects suitability for a task is determined by presence of methods (behaviours) ,
+          rather than its actual type.
+
+
+Types:
+
+
+
+Type definition V/S Type alias:
+    - type alias simply allows you to use alternate name for existing or custom type without creating a new type , good for readability.
+    - type definition creates a new type based on underlying type , and since it is new type it can not be directly substituted for underlying type, which can happen with type alias.
+    - simply , for type definition the new type and underlying type need explicit conversion before substituting them , while for type alias that is not the case.
+    - type declarations (definition and alias) in no manner represent any hierarchical relation , like inheritance in OOPs supported languages.
+
+Methods:
+    - Just like other languages , user defined types can have attached behaviours , that is they can have methods with them , nothing new or different here apart from syntax.
+    - instead of using this(java) or self(python) keyword , go methods have receiver in their syntax to signify association with composite type.
+    - Method Set:
+        - Method set of a type is the set of all methods that a type is allowed to call and compiler considers when matching interfaces.
+        - It is a compile time concept.
+
+    - Function vs Method : when to use what
+        - anytime logic is dependent on values configured at startup or changed while program is running, then those values should be stored in struct.
+          and that logic should be implemented using method of that struct.
+        - if logic depends only on input parameters , then it should be implemented as a function.
+        - this distinction is mandatory to make because , because a method can be used as a function.
+
+Pointer Receiver V/S Value Receiver:
+    - In context of methods on user defined types , based on what is passed to method parameter , it can be pointer or value , two types of methods happen to be pointer receiver and value receiver.
+    - In case parameter will be modified or nil instance need to be taken care of , choose pointer receiver , else stick with value receiver.
+    - consistency here is maintained by convention meaning that if some of methods need to have pointer receiver , let other read only methods be also pointer receiver even if they can value receivers.
+    - Method set of value type contains only value receiver methods, while for Pointer receiver type it contains both pointer and value receiver methods.
+        - Method set(T)   ⊂   Method set(*T)
+    - Automatic & and * only happen for method calls on addressable values — never for temporaries or interface matching.
+
+Enumeration : Iota
+    - go way of emulating enums / enumeration concept found in other languages.
+    - while using iota good practice is to first define a type based on int that will present all valid states.
+
+
+Embedding:
+    - A general advice is to use object composition over class inheritance.
+    - In go , composition with method promotion happens that is embedded type and its associated methods are automatically promoted to that of containing struct,
+      and can be accessed on instance of containing struct using (.) notation.
+    - Java has composition using inheritance while in go composition is achieved via embedding.
+    - Unlike inheritance , where a hierarchy exists and super type variable can be assigned to subtype object (upcasting , down-casting) , this does not happens in embedding.
+    - Go does not have dynamic method dispatch , say unlike java.
+    - when embedding happens then the method promotion contributes towards the method set of containing struct , meaning they can make
+      containing struct implement a interface.
+    - embedding also works with go interfaces.
+
+Static and Dynamic Dispatch:
+    - Static dispatch is employed for methods employed on concrete types (structs).
+        - In Java and Go , static dispatch work almost same.
+    - Dynamic dispatch is employed for methods employed on abstract type(interface).
+        - In Java , dynamic dispatch happens via inheritance+method overriding, while in Go it happens via interfaces.
+
+Interfaces:
+    - Similar to other language , interfaces are abstract type which list set of methods which need to implemented via
+      other types.
+    - here interfaces are implicit in nature , means no explicit keywords are required (like implements keyword in Java) , if the
+      method set of type matches the set of methods signatures declared in interface , then it automatically implements that interface.
+      - Also interface satisfaction depends on method ownership , and not call convenience , remember pointer receiver and value receiver
+        have different method sets.
+    - thus these instances can have their types defined as type of the interface if they implement the methods of the interface.
+        - quite useful , allows polymorphism.
+    - as a convention interfaces are declared using err endings. (eg - io.Reader , io.Closer etc.)
+    - empty interface: interface{}
+        - since empty interface defines no methods , means no contract to fulfill , hence all types implicitly implement an empty interface,
+          meaning empty interface is an wildcard , any object type can use it for its type declaration.
+        - any identifier is actually an alias for interface {}.
+    - go focuses on reusability , that is inbuilt interfaces already define those behaviour which our code needs , better to use the inbuilt interface.
+    - accept interfaces and return structs , think why?
+    - Interface Implementation at Runtime:
+        - go interfaces are implemented using structs with two pointer fields, one for value and one for type of the value.
+        - as long as type field is non nil , interface is non nil.
+        - thus for an interface to be considered non nil , both type and value must be nil.
+    - go interfaces are comparable , that is they can be compared using == or !=, and based on above discussion for two interfaces to be
+      - equal , both their types and value must be equal.
+      - Go compares interfaces by first checking nil, then dynamic(runtime) type equality; if the types match and are comparable, their values are compared, otherwise a non-comparable type causes a panic.
+
+
+Type Assertions and Type Switches:
+    - two ways to see whether a variable of an interface type has a specific concrete type or if the concrete type implements another interface.
+    - Type Assertion: mechanism to check dynamic type of value during runtime.
+        - if assertion is success , result is underlying value of type T asserted , else runtime error happens.
+        - comma ok idiom helps perform safe assertion
+    - Type Switch: type assertion + switch statement
+        - when an interface could be one of multiple possible types , then type switch is used.
+    - Type assertions and Type Switches should be used sparingly
+
+Function Types: Bridges to Interfaces
+    - In Go, function types act as adapters, allowing ordinary functions to satisfy interfaces by attaching methods—this is why they’re called a bridge to interfaces.
+
+Dependency Injection(DI):
+    - As a general advice code should be decoupled , so that changes to one part of program do not have side effects on some other part.
+    - Dependency Injection is one such technique , meaning instead of a class / struct itself figuring out dependencies(other piece of code) , supply them from outside
+      relieve the class/struct from this struggle of doing things itself.
+    - DI also makes testing lot easier.
+    - DI is made easier by implicit interfaces:
+        - Interfaces make things easy because they describe behavior, not concrete types — and anything that satisfies that behavior can be plugged in.

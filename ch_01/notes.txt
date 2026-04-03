@@ -1,0 +1,35 @@
+Go Tooling
+1. go build - compiler
+2. go fmt - code formatter (spaces , indents etc are fixed)
+3. go mod - dependency manager
+4. go test - test runner
+5. go vet - tool to check for common coding mistakes (static analyzer, code smells etc. are fixed)
+
+Go MOD file:
+1. A Go project is called module.
+1. Presence of mod file marks directory as go module.
+3. go mod init -> to create a mod file.
+4. mod file declares name of module , minimum supported go version and list of all external go modules required.
+5. go mod file is similar to requirements.txt(python) / package.json(NodeJS) / pom.xml(JAVA).
+
+
+Packages:
+1. Code within a go module is organized as one or more packages.
+2. File within / having same package declaration have same namespace.
+3. Go imports entire packages , unlike other languages.
+4. Main file in each package contains main method , which is the entry point to go code , as mandatory convention.
+
+
+General Points:
+1. Go is compiled language and spits out platform (os and cpu architecture) specific binaries.
+2. By convention go programs use tab for indentation.
+3. Make sure to run go fmt amd go vet command before commiting go code.
+4. Like Java and C++/C , go also requires each line to end with semicolon (:) , but to ease developer load , by
+   default no one should add semicolons at end of line , it is automatically done by compiler.
+5. Go language comes with backward compatability with respect to standard library and language itself
+   unless it is for security or bug , starting versions 1.XX . This guarantee is not for go commands.
+
+MakeFiles:
+1. Makefiles are instructions written in file to guide the build steps in a program , done to automate the entire
+   workflow.
+2. Makefiles are chaotic with respect to indentation and space, also not supported out of the box for windows.

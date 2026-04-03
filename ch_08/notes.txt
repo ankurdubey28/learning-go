@@ -1,0 +1,40 @@
+Generics:
+    - Type Parameters: placeholders for actual types that will be used when actual type is given at runtime.
+    - Type Constraints: restrict the types that can be used as type arguments.
+        eg: func f[T any](s[]T)T{// business logic}-> here T: type parameter , any: type constraint
+        - interface can be used to represent type constraints , but such interfaces then cannot be used to define type for any variable/function/as parameter or return type.
+        - Type Element: each entry in such constraint interface is a type element.
+        - Type Terms : smaller units which come together (using union(|) operator) to make a type term. They can be built in composite or custom user types as well.
+        - eg: type Integer interface {
+              	~int | ~int8
+               }
+        here -> type element: ~int | int8
+                type term: either ~int or int8
+        - Operators : an operator is allowed on a type if and only if the operator is valid for each type in the type set.
+        - Constant : same rule as operators , constants need to be valid for all types terms in type element.
+        - ~: special operator which is used when we want the type term to be valid for any type which has given type term as its underlying term.
+
+    - Type Inference:
+        - go supports type inference for generic functions , but in specific cases it does not work.
+            - eg: when type parameter is only used as a return value.
+
+
+    - Methods:
+        - go methods work with generics , but only when the type to which they belong does have parameterized type.
+        - go methods on their own block level cannot have type parameters , use only those which are present with the type to which this method belongs.
+
+
+
+PitFalls and Traps:
+    - use generics when it simplifies code and improves reusability.
+    - avoid using very complex type constraints , as they make readability bad.
+    - comparison of type parameters with nil is not allowed (think why).
+    - recursive embedding of interface types is not allowed.
+
+
+Before Generics: How things were handled before generics introduction in go 1.18
+    - Implement a function for each data type.
+    - Use a data type with large range , eg: math.Max and math.Min use float64 so that all integer types
+      can be compared with single function (as all other integers can be represented within the range of float64).
+    - use interface{} (any) type , but has runtime overhead of type assertions and type switches , also
+      some errors can slip through the compiler.

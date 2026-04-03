@@ -1,0 +1,19 @@
+Standard Library:
+    - Much like python , go has batteries included philosophy , that is lot of utility tools are built in.
+
+    io package:
+        - defines the two most used interfaces , io.Reader and io.Writer.
+
+
+    time package:
+        - time.Time : a moment of time is represented using Time , and has time zone information as well.
+        - time.Duration : depicts period of time , based on int64
+        - time.Parse: converts a string to time.Time
+
+
+    json package:
+        - marshal -> convert go data type to JSON.
+        - unmarshal -> convert JSON data to go data type.
+        - struct tags: string literals used to attach metadata to struct field , which other packages can access using reflection
+          at runtime. This is utilized by JSON package to map go struct to json keys. Struct tags cannot extend beyond single line.
+          -format : `tagname : tagvalue`
