@@ -8,7 +8,7 @@ Some Terms:
 
 Points:
 1. Storing more than one module in a repository can be done but is advised against given the fact that
-    everything within a module is versioned together. So having two modules in same repo will make version tracking messsy.
+    everything within a module is versioned together. So having two modules in same repo will make version tracking messy.
 
 2. JS (Node.JS) and Go swap the meaning of packages and modules.
 3. Initialization Order of a go program:
@@ -52,4 +52,11 @@ Package:
     - special predefined function which runs before any other part code in the package.
     - init() is executed as soon as the package is imported.
     - useful in cases where any configurations or resources need to be set up which other part of package need.
+    - signature: func init(){} => no inputs and no outputs , thus only way init function works is through side effects.
     - also used for import side effects (read more about it)
+        - import _ package name: _ triggers the init() of package being imported for side effect.
+    - init() can be present multiple times in package or even in a file.
+    - usage of init() is discouraged as it can cause issues:
+        - side effects
+        - make testing tough
+        - makes understanding control flow tough and implicit.
