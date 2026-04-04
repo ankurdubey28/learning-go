@@ -1,0 +1,55 @@
+Organizing code in GO : Packages and Modules
+
+Some Terms:
+1. Repository : Place in version control system where source code of project is stored.
+2. Module : bundle of go source code that is distributed and versioned as a  single unit.
+3. Package: breaking module down to manage code files gives us packages.
+
+
+Points:
+1. Storing more than one module in a repository can be done but is advised against given the fact that
+    everything within a module is versioned together. So having two modules in same repo will make version tracking messsy.
+
+2. JS (Node.JS) and Go swap the meaning of packages and modules.
+3. Initialization Order of a go program:
+    - imported packages run first
+    - current package runs next
+    - main() functions runs at last
+
+
+Module:
+1. Directory of go source code becomes a module with presence of a go.mod file.
+    - use go mod init MODULE_PATH : command to create mod file , module path is case sensitive and its advised to not use uppercase letters with it.
+2. Contents of GO module :
+    - module name
+    - go version (minimum compatible go version) declared with go directives
+    - require directive (list dependencies only if module has dependencies along with minimum version required)
+        - first directive list direct / immediate dependencies of the module
+        - second directive lists indirect / dependencies of direct dependency. (ends with comment //indirect)
+    - 3 other directives are there as well (replace , exclude , retract).
+
+
+
+Package:
+1. Module is further broken down into next abstraction layer called package to aggregate go files together.
+2. One package per directory is strongly advised convention , meaning all files in a directory must have same package.
+3. Import statement is used to access exported Identifiers (variable , function , constant , method , fiedl or type) from other package .
+4. Go follows implicit exports meaning if name of identifier starts with Capital Letters then its auto exported.
+5. Anything which is exported is part of your package api.
+6. Package is declared using pacakge <name> on top of a go file.
+7. Its a good rule to make name of package and name of directory same.
+8. Generally its a good idea to name package as a part of speech , that is noun based on what that package is doing.
+9. While importing packages into current file , within the import statment only , packages can be renamed for ease. This is called package name override.
+
+10. Internal Package
+    - Special package useful in situation : when we want to share a identifier in your module (among packages) but not make it a part of our api.
+    - Thus if a package is name internal then exported identifiers in that package and subpackage are available in :
+        - only to direct parent package.
+        - only to sibling packages of internal package.
+
+11. Go does not allow circular dependencies.
+12. init function
+    - special predefined function which runs before any other part code in the package.
+    - init() is executed as soon as the package is imported.
+    - useful in cases where any configurations or resources need to be set up which other part of package need.
+    - also used for import side effects (read more about it)
