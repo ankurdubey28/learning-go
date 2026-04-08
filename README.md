@@ -2,7 +2,7 @@
 
 This repository contains my notes and code while reading:
 
-> **Book:** *Learning Go* by Jon Bodner
+> **Book:** *Learning Go* (2nd Edition) by Jon Bodner
 
 ---
 
@@ -11,6 +11,29 @@ This repository contains my notes and code while reading:
 - Reinforce concepts through coding
 - Maintain structured notes chapter-wise
 - Build a strong foundation in Go
+
+---
+
+## Index
+
+| Chapter | Title |
+|---------|-------|
+| ch_01 | Setting Up Your Go Environment |
+| ch_02 | Predeclared Types and Declarations |
+| ch_03 | Composite Types |
+| ch_04 | Blocks, Shadows, and Control Structures |
+| ch_05 | Functions |
+| ch_06 | Pointers |
+| ch_07 | Types, Methods, and Interfaces |
+| ch_08 | Generics |
+| ch_09 | Errors |
+| ch_10 | Modules, Packages, and Imports |
+| ch_11 | Go Tooling |
+| ch_12 | Concurrency in Go |
+| ch_13 | The Standard Library |
+| ch_14 | The Context |
+| ch_15 | Writing Tests |
+| ch_16 | Here There Be Dragons: Reflect, Unsafe, and Cgo |
 
 ---
 
@@ -27,7 +50,9 @@ Organized chapter-wise following the book, with each chapter directory containin
 - Functions and error handling
 - Structs and methods
 - Interfaces
+- Generics
 - Standard library usage
+- Go tooling ecosystem
 - Core language concepts from the book
 
 ---
@@ -52,7 +77,7 @@ go run .
 
 ## Reference
 
-- [*Learning Go* — Jon Bodner](https://www.oreilly.com/library/view/learning-go/9781492077206/)
+- [*Learning Go*, 2nd Edition — Jon Bodner](https://www.oreilly.com/library/view/learning-go-2nd/9781098139285/)
 
 ---
 
