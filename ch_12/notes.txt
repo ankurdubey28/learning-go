@@ -13,11 +13,11 @@ CSP:
         1. Process - sequential execution unit. Has its own state, does not share mutable memory and communicates via only channels.
         2. Channel - communication medium between processes. Message passing is explicit in nature.
         3. Rendezvous - synchronous blocking communication mechanism where two or more process meet to exchange data.
-            - Both receiver and sender must be ready simultaneously to pass message, otherwise on waits (blocked) for other.
+            - Both receiver and sender must be ready simultaneously to pass message, otherwise one waits (blocked) for other.
             - Pure CSP has no concept of buffering.
             - Go extends on Pure CSP by adding buffering to channels.
             - Unbuffered channels described in CSP are not message pipes , but its extension in go behaves much like message pipes.
-            - For more clarity , channel is and event , when message sender and receiver synchronize to pass message.
+            - For more clarity , channel is an event , when message sender and receiver synchronize to pass message.
             - Thus the idea is to share memory by communication , not communicate by sharing memory.
 
     - GoThreads:
@@ -30,7 +30,7 @@ GoRoutine:
     - A goroutine is a lightweight, user-space–scheduled execution context multiplexed over OS threads by the Go runtime using an M:N scheduler.
     - to launch a goroutine , simply prefix go keyword just before a function: eg-> go func f(){}.
     - Any function can be launched as goroutine.
-    - As a convention , go routines are wrapped in closure for better separation of concern helps better testability and modularity.
+    - As a convention , go routines are wrapped in closure for better separation of concern which also helps better testability and modularity.
     - main() function itself by default starts in main thread.
 
 
@@ -38,16 +38,18 @@ Channels:
     - as discussed above an event used for synchronous communication for goroutines.
     - in golang channels are built in type (chan) like maps / slices etc. and can be made using make() function.
     - channels are reference types , thus zero value is nil.
+    - Channels are bidirectional
 
     - Reading:
         - a:=<- ch // this means reading from channel ch to a.
         - ch <- b //this means writing value from b to channel ch.
         - Each value written to channel can be read only once , so if many go routines are reading from a channel , only one of them will read the value.
           Above point makes sense given the nature of channels described in CSP.
-        - Behaviour of normal channels (unbuffered) are exactly as described above in CSP.
+        - Behavior of normal channels (unbuffered) are exactly as described above in CSP.
           Means one channel to work , two goroutines are needed anyhow.(blocking nature).
-        - Go provides buffered channels are well, which allow limited number of writes without blocking.
-          Blocking only happens when buffer overflows or underflows.
+        - Go provides buffered channels , which basically introduces a buffer / queue between reading and writing routines.
+          This introduces async behavior (to deal with real world problems) .
+          Blocking (sync behavior) only happens when buffer overflows or underflows.
         - for range loop works perfectly fine with chan.
         - close(ch) function is used to close channel to avoid deadlock.
           - Responsibility for closing a channel lies with goroutine that writes to the channel
@@ -57,13 +59,36 @@ Channels:
 
 
 Select:
-    - It is is a control structure for coordinating multiple channel operations.
+    - It is is a control structure for coordinating multiple channel operations concurrently.
     - Problem: if two concurrent operations can be performed , which one to be performed first?
       We cannot favor one operation over the other, because the one left will be starved.
     - Select syntax is very similar to Switch keyword.
     - Select does not give mathematical guarantee , if multiple cases have channels that can be read or written,
       then select algorithm does randomized selection with no bias.
-    - for loop paired with select statement is so widely used it hss its own name : for select loop.
+    - for loop paired with select statement is so widely used it has its own name : for select loop.
     - having default case in select is fine , but having default case in for select loop is not a good idea ,
       it can run force the loop to run always whenever there is a case not specifically handled with cases , killing cpu time.
 
+
+
+Race Condition:
+    - When multiple threads try to access and modify same data (memory address or Critical section) simultaneously is what causes race condition.
+    - causes issues like:
+        lost updates
+        stale reads
+        system entering into inconsistent states.
+    - go run --race . command: checks for presence of race conditions.
+
+
+3 Pillars to handle race condition in GO:
+    1. Mutexes - lock critical section
+    2. Channels - message communication between go routines
+    3. Atomic operations - lock free modification of primitive types
+
+Sync Package:
+    - provides low level synchronization primitives to prevent race conditions and help with goroutines coordination.
+    - Core Tools:
+        1. Mutex / RWMutex - lock for memory.
+        2. WaitGroup - helps in coordination.
+        3. Once - run something exactly once.
+        4. atomics - lock free hardware level synchronization
