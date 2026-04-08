@@ -59,15 +59,45 @@ Channels:
 
 
 Select:
-    - It is is a control structure for coordinating multiple channel operations concurrently.
-    - Problem: if two concurrent operations can be performed , which one to be performed first?
-      We cannot favor one operation over the other, because the one left will be starved.
-    - Select syntax is very similar to Switch keyword.
-    - Select does not give mathematical guarantee , if multiple cases have channels that can be read or written,
-      then select algorithm does randomized selection with no bias.
-    - for loop paired with select statement is so widely used it has its own name : for select loop.
-    - having default case in select is fine , but having default case in for select loop is not a good idea ,
-      it can run force the loop to run always whenever there is a case not specifically handled with cases , killing cpu time.
+    - It is a control structure for coordinating multiple channel operations concurrently.
+    - Works only with channel send/receive operations.
+
+    - Problem: if multiple channel operations are possible, which one should execute?
+      We cannot deterministically favor one, as it may cause starvation.
+    - Solution:
+      If multiple cases are ready, select chooses one pseudo-randomly.
+      There is no priority or ordering guarantee.
+      Also, no strict fairness guarantee over time (starvation still theoretically possible).
+    - Behavior:
+      1. If one or more cases are ready → execute one (pseudo-randomly chosen).
+      2. If no case is ready → select blocks.
+      3. If default is present → executes immediately (non-blocking).
+    - Select syntax is very similar to switch keyword,
+      but cases are channel operations instead of values.
+    - Select executes only ONE case, even if multiple are ready.
+    - Select is NOT a loop, it runs only once.
+    - for loop paired with select statement is widely used:
+      for {
+          select {
+              ...
+          }
+      }
+      This is called a "for-select loop" and is used in event loops, workers, servers, etc.
+
+    - Default case:
+      Having default in select is fine for non-blocking operations (try-send / try-receive).
+      BUT having default inside a for-select loop is usually not a good idea,
+      because it causes busy-waiting:
+          → loop keeps running even when no channel is ready
+          → leads to high CPU usage (wastes resources)
+    - Nil channel behavior:
+      A nil channel blocks forever.
+      Useful to dynamically disable a case in select.
+    - Closed channel behavior:
+      Receive from closed channel → returns zero value immediately.
+      Send to closed channel → causes panic.
+    - Mental model:
+      select = "wait on multiple channels and execute whichever becomes ready first"
 
 
 
